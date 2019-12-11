@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.scss';
 import 'bootstrap/dist/css/bootstrap.css';
-import './assets/css/fonts.css';
 import CurrentTemperature from './components/currentTemperature';
 
 function App() {
