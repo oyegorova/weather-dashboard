@@ -10,9 +10,9 @@ function App() {
         <div className="row vh-100">
           <div className="p-0">
             <div className="d-flex flex-column justify-content-around align-items-start vh-100 p-2">
-              <CurrentTemperature title='Outside' temperature='0' conditions="sunny"></CurrentTemperature>
-              <CurrentTemperature title='Center room' temperature='25' conditions="sunny"></CurrentTemperature>
-              <CurrentTemperature title='Near window' temperature='20' conditions="sunny"></CurrentTemperature>
+              <CurrentTemperature title='Outside' temperatureName="outside"></CurrentTemperature>
+              <CurrentTemperature title='Center room' temperatureName="centerRoom"></CurrentTemperature>
+              <CurrentTemperature title='Near window' temperatureName="nearWindow"></CurrentTemperature>
             </div>
           </div>
           <div className="col-auto graphics d-flex flex-column justify-content-around vh-100 p-2">
