@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "" // TODO: add ENV variable
+  baseURL: "http://172.18.200.166:8080"
 });
 apiClient.interceptors.request.use(
   config => {
@@ -18,7 +18,7 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   response => response,
   async error => {
-    return Promise.reject(error.response.data);
+    return Promise.reject(error);
   }
 );
 

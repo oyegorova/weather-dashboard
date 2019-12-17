@@ -1,4 +1,4 @@
-import { get, post, put, destroy } from "./config";
+import { get } from "./config";
 export const Temperature = {
   byDay: sensors => get(`/sensors/v1/day?sensors=${sensors}`),
   byPeriod: (sensors, fromEpochMillis, toEpochMillis) =>
@@ -7,3 +7,4 @@ export const Temperature = {
     ),
   realTime: () => get(`/sensors/v1/realtime`)
 };
+export const WebSocket_ENDPOINT = "ws://172.18.200.166:8080/sensors/v1/realtime";
