@@ -1,37 +1,41 @@
 import React, { Component } from "react";
-import worker from "../worker";
-import WebWorker from "../workerSetup";
+import { WebSocket_ENDPOINT } from "../services/API/index";
 
 class CurrentTemperature extends Component {
   state = {
     value: 0
   };
 
-  fetchWebWorker = () => {
-    this.worker.postMessage(this.props.temperatureName);
-
-    this.worker.addEventListener("message", event => {
-      this.setState({
-        value: event.data
-      });
-    });
-  };
-
   componentDidMount = () => {
-    this.worker = new WebWorker(worker);
-    this.fetchWebWorker();
-  };
+    const sensorName = this.props.temperatureName;
+    const ws = new WebSocket(WebSocket_ENDPOINT);
+    ws.onopen = () => {
+      console.log("connected");
+    };
+    ws.onmessage = event => {
+      // listen to data sent from the websocket server
+      const message = JSON.parse(event.data);
+      console.log("FROM WS: ", message);
+      if (message.data.sensorName === sensorName) {
+        this.setState({ value: message.data.value });
+      }
+    };
+    ws.onclose = () => {
+      console.log("disconnected");
+      // TODO: automatically try to reconnect on connection loss
+    };
 
-  componentWillUnmount = () => {
-    this.worker.terminate();
+    ws.onerror = e => {
+      console.log("Error with web socket: ", e);
+    };
   };
 
   render() {
     return (
       <div className="d-flex flex-column justify-content-between w-100 currentTemperatureWrapper">
-        <h3 className="title">{this.props.title}</h3>
-        <div className="temperatureValue">{this.state.value} C</div>
-        <div className="conditions">sunny</div>
+        <div></div>
+        <div className="temperatureValue">{this.state.value} &#x2103;</div>
+        <h3 className="title m-0 pb-2">{this.props.title}</h3>
       </div>
     );
   }
