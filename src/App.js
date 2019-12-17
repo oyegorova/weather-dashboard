@@ -2,8 +2,25 @@ import React from 'react';
 import './App.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import CurrentTemperature from './components/currentTemperature';
+import { Temperature, sensorNames } from './services/API/index';
 
 function App() {
+
+  const getTemperatureArray = sensorName => {
+    Temperature.byDay(sensorName)
+      .then(data => {
+        const temperatureArray = data.data[sensorName];
+        console.log(sensorName, temperatureArray);
+      })
+      .catch(error => {
+        console.log("Error in byDay request: ", error);
+      });
+  }
+
+  sensorNames.forEach(sensor => {
+    getTemperatureArray(sensor);
+  })
+
   return (
     <div className="App">
       <div className="container-fluid dashboard">
