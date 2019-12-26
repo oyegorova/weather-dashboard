@@ -5,7 +5,7 @@ import { faSpinner } from "@fortawesome/free-solid-svg-icons";
 class CurrentTemperature extends Component {
   state = {
     value: null,
-    highLimit: 26,
+    highLimit: 27,
     lowLimit: 20
   };
 
@@ -18,7 +18,6 @@ class CurrentTemperature extends Component {
     ws.onmessage = event => {
       // listen to data sent from the websocket server
       const message = JSON.parse(event.data);
-      console.log("FROM WS: ", message);
       if (message.data.sensorName === sensorName) {
         this.setState({ value: message.data.value });
       }

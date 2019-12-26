@@ -3,17 +3,159 @@ import './App.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import CurrentTemperature from './components/currentTemperature';
 import { Temperature, sensorNames } from './services/API/index';
-import { Chart } from 'react-chartjs-2';
+import LineChart from './components/lineChart';
+import _ from 'lodash'
 
 class App extends Component {
-  state = {};
-  chartRef = React.createRef();
+  _isMounted = false;
+
+  state = {
+    outside: null,
+    centerRoom: null,
+    nearWindow: null,
+    d3: null,
+    data: null,
+    lineChartData: {
+      datasets: [
+        {
+          type: "scatter",
+          label: "Center Room",
+          showLine: true,
+          backgroundColor: "rgba(0, 0, 0, 0)",
+          borderColor: '#9dfd87',
+          pointBackgroundColor: 'transparent',
+          pointBorderColor: 'transparent',
+          borderWidth: "2",
+          lineTension: 0.05,
+          data: [],
+        },
+        {
+          type: "scatter",
+          label: "Outside",
+          showLine: true,
+          backgroundColor: "rgba(0, 0, 0, 0)",
+          borderColor: '#21a5f3',
+          pointBackgroundColor: 'transparent',
+          pointBorderColor: 'transparent',
+          borderWidth: "2",
+          lineTension: 0.05,
+          data: [],
+        },
+
+        {
+          type: "scatter",
+          label: "Near Window",
+          showLine: true,
+          backgroundColor: "rgba(0, 0, 0, 0)",
+          borderColor: '#fdde87',
+          pointBackgroundColor: 'transparent',
+          pointBorderColor: 'transparent',
+          borderWidth: "2",
+          lineTension: 0.05,
+          data: [],
+        }
+      ]
+    },
+    lineChartOptions: {
+      responsive: true,
+      maintainAspectRatio: false,
+      padding: 10,
+      title: {
+        display: true,
+        text: "HOURLY TEMPERATURE",
+        fontSize: 25,
+        fontFamily: 'Roboto',
+        fontStyle: 'normal',
+        fontColor: 'white',
+        padding: 15,
+      },
+      tooltips: {
+        enabled: true,
+        mode: 'index',
+        intersect: false,
+        fontColor: 'white',
+      },
+      scales: {
+        yAxes: [{
+          type: 'linear',
+          position: 'bottom',
+          gridLines: {
+            display: true,
+            color: '#ffffff45'
+          },
+          ticks: {
+            auto: true,
+            lineHeight: 2.5,
+            fontSize: 16,
+            fontFamily: 'Roboto',
+            fontColor: 'white',
+            stacked: true,
+            callback: value => `${value} °`
+          }
+        }],
+        xAxes: [{
+          type: 'time',
+          distribution: 'series',
+          gridLines: {
+            display: false,
+            color: 'white'
+          },
+          time: {
+            unit: 'hour',
+            displayFormats: {
+              quarter: 'h:mm a'
+            }
+          },
+          ticks: {
+            autoSkip: false,
+            maxRotation: 0,
+            minRotation: 0,
+            maxTicksLimit: 10,
+            lineHeight: 2.5,
+            fontSize: 16,
+            fontFamily: 'Roboto',
+            fontColor: 'white',
+          }
+        }]
+      },
+      legend: {
+        labels: {
+          fontColor: "white",
+          fontSize: 18
+        }
+      },
+    },
+  };
 
   getTemperatureArray = sensorName => {
+    const oldDataSet = this.state.lineChartData.datasets;
+    let newDataSet = [...oldDataSet];
+    console.log(newDataSet)
+
     Temperature.byDay(sensorName)
       .then(data => {
-        const temperatureArray = data.data[sensorName];
-        console.log(sensorName, temperatureArray);
+        sensorNames.forEach((sensor, index) => {
+          const temperatureArray = data.data[sensor];
+          // transform obj to have x-y values
+          let newData = temperatureArray.map(obj => {
+            return _.transform(obj, (result, value, key) => {
+              if (key == "value") {
+                return result["y"] = value;
+              } else {
+                let v = new Date(value).getTime();
+                return result["x"] = v;
+              }
+            });
+          });
+          newDataSet[index].data = newData;
+          const newChartData = {
+            ...this.state.lineChartData
+          };
+          newChartData.datasets = newDataSet;
+          if (this._isMounted) this.setState({ lineChartData: newChartData });
+          console.log(this.state.lineChartData.datasets)
+        })
+
       })
       .catch(error => {
         console.log("Error in byDay request: ", error);
@@ -21,52 +163,19 @@ class App extends Component {
   }
 
   getData = () => {
-    sensorNames.forEach(sensor => {
-      this.getTemperatureArray(sensor);
-    });
+    this.getTemperatureArray(sensorNames);
   }
 
   componentDidMount() {
-    const myChartRef = this.chartRef.current.getContext("2d");
-
-    new Chart(myChartRef, {
-      type: "line",
-      data: {
-        labels: ['00', '02', '03', '04', '06', '08', '10', '12', '14', '16', '18', '20', '22'],
-        datasets: [
-          {
-            label: "Outside",
-            data: [22, 45, 10, 22, 67, 10, 78, 45, 10, 90, 45, 10, 3],
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: "blue",
-            borderColor: "blue",
-            spanGaps: true,
-            pointRadius: 4,
-          },
-          {
-            label: "Center Room",
-            data: [86, 67, 91, 86, 67, 91, 86, 67, 91, 86, 67, 91, 24],
-            fill: false,
-            lineTension: 0.1,
-            backgroundColor: "aquamarine",
-            borderColor: "aquamarine",
-            spanGaps: true,
-            pointRadius: 4,
-          }
-        ]
-      },
-      options: {
-        //Customize chart options
-        responsive: true,
-        maintainAspectRatio: false,
-      }
-    });
+    this._isMounted = true;
+    this.getData();
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
-
-
   render() {
+
     return (
       <div className="App">
         <div className="container-fluid dashboard">
@@ -79,10 +188,12 @@ class App extends Component {
               </div>
             </div>
             <div className="col-8 graphics d-flex flex-column justify-content-around vh-100 p-2">
-              <canvas className="w-100"
-                id="myChart"
-                ref={this.chartRef}
-              />
+              <div className="chart-container">
+                <LineChart
+                  data={this.state.lineChartData}
+                  options={this.state.lineChartOptions}
+                />
+              </div>
             </div>
             <div className="col-1 bordered image"></div>
           </div>
