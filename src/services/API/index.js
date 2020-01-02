@@ -10,4 +10,4 @@ export const Temperature = {
 
 export const WebSocket_ENDPOINT = "ws://172.18.200.166:8080/sensors/v1/realtime";
 
-export const sensorNames = ['centerRoom', 'outside', 'nearWindow'];
+export const sensorNames = ['centerRoom', 'nearWindow', 'outside'];

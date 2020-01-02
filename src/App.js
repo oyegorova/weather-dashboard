@@ -28,20 +28,8 @@ class App extends Component {
           borderWidth: "2",
           lineTension: 0.05,
           data: [],
+          yAxisID: 'A'
         },
-        {
-          type: "scatter",
-          label: "Outside",
-          showLine: true,
-          backgroundColor: "rgba(0, 0, 0, 0)",
-          borderColor: '#21a5f3',
-          pointBackgroundColor: 'transparent',
-          pointBorderColor: 'transparent',
-          borderWidth: "2",
-          lineTension: 0.05,
-          data: [],
-        },
-
         {
           type: "scatter",
           label: "Near Window",
@@ -53,7 +41,20 @@ class App extends Component {
           borderWidth: "2",
           lineTension: 0.05,
           data: [],
-        }
+          yAxisID: 'A'
+        }, {
+          type: "scatter",
+          label: "Outside",
+          showLine: true,
+          backgroundColor: "rgba(0, 0, 0, 0)",
+          borderColor: '#21a5f3',
+          pointBackgroundColor: 'transparent',
+          pointBorderColor: 'transparent',
+          borderWidth: "2",
+          lineTension: 0.05,
+          data: [],
+          yAxisID: 'B'
+        },
       ]
     },
     lineChartOptions: {
@@ -77,8 +78,25 @@ class App extends Component {
       },
       scales: {
         yAxes: [{
+          id: 'A',
           type: 'linear',
-          position: 'bottom',
+          position: 'left',
+          gridLines: {
+            display: true,
+            color: '#ffffff45'
+          },
+          ticks: {
+            lineHeight: 2.5,
+            fontSize: 16,
+            fontFamily: 'Roboto',
+            fontColor: 'white',
+            stacked: true,
+            callback: value => `${value} °`
+          }
+        }, {
+          id: 'B',
+          type: 'linear',
+          position: 'right',
           gridLines: {
             display: true,
             color: '#ffffff45'
@@ -86,9 +104,9 @@ class App extends Component {
           ticks: {
             auto: true,
             lineHeight: 2.5,
-            fontSize: 16,
+            fontSize: 22,
             fontFamily: 'Roboto',
-            fontColor: 'white',
+            fontColor: '#21a5f3',
             stacked: true,
             callback: value => `${value} °`
           }
@@ -162,13 +180,9 @@ class App extends Component {
       });
   }
 
-  getData = () => {
-    this.getTemperatureArray(sensorNames);
-  }
-
   componentDidMount() {
     this._isMounted = true;
-    this.getData();
+    this.getTemperatureArray(sensorNames);
   }
   componentWillUnmount() {
     this._isMounted = false;
