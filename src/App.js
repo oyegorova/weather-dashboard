@@ -143,12 +143,12 @@ class App extends Component {
         }
       },
     },
+    timer: null
   };
 
   getTemperatureArray = sensorName => {
     const oldDataSet = this.state.lineChartData.datasets;
     let newDataSet = [...oldDataSet];
-    console.log(newDataSet)
 
     Temperature.byDay(sensorName)
       .then(data => {
@@ -171,7 +171,7 @@ class App extends Component {
           };
           newChartData.datasets = newDataSet;
           if (this._isMounted) this.setState({ lineChartData: newChartData });
-          console.log(this.state.lineChartData.datasets)
+          console.log('datasets: ', this.state.lineChartData.datasets)
         })
 
       })
@@ -183,9 +183,12 @@ class App extends Component {
   componentDidMount() {
     this._isMounted = true;
     this.getTemperatureArray(sensorNames);
+    const timer = setInterval(() => { this.getTemperatureArray(sensorNames) }, 300000);
+    this.setState({ timer });
   }
   componentWillUnmount() {
     this._isMounted = false;
+    clearInterval(this.state.timer);
   }
 
   render() {
