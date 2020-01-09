@@ -1,10 +1,14 @@
 import React, { Component } from 'react';
 import './App.scss';
 import 'bootstrap/dist/css/bootstrap.css';
+import _ from 'lodash';
+import moment from 'moment';
+import LineChart from './components/lineChart';
+import BarChart from './components/barChart';
+import { lineChartData, lineChartOptions, barChartData, barChartOptions } from './services/chart.config';
 import CurrentTemperature from './components/currentTemperature';
 import { Temperature, sensorNames } from './services/API/index';
-import LineChart from './components/lineChart';
-import _ from 'lodash'
+import { Chart } from 'react-chartjs-2';
 
 class App extends Component {
   _isMounted = false;
@@ -15,138 +19,14 @@ class App extends Component {
     nearWindow: null,
     d3: null,
     data: null,
-    lineChartData: {
-      datasets: [
-        {
-          type: "scatter",
-          label: "Center Room",
-          showLine: true,
-          backgroundColor: "rgba(0, 0, 0, 0)",
-          borderColor: '#9dfd87',
-          pointBackgroundColor: 'transparent',
-          pointBorderColor: 'transparent',
-          borderWidth: "2",
-          lineTension: 0.05,
-          data: [],
-          yAxisID: 'A'
-        },
-        {
-          type: "scatter",
-          label: "Near Window",
-          showLine: true,
-          backgroundColor: "rgba(0, 0, 0, 0)",
-          borderColor: '#fdde87',
-          pointBackgroundColor: 'transparent',
-          pointBorderColor: 'transparent',
-          borderWidth: "2",
-          lineTension: 0.05,
-          data: [],
-          yAxisID: 'A'
-        }, {
-          type: "scatter",
-          label: "Outside",
-          showLine: true,
-          backgroundColor: "rgba(0, 0, 0, 0)",
-          borderColor: '#21a5f3',
-          pointBackgroundColor: 'transparent',
-          pointBorderColor: 'transparent',
-          borderWidth: "2",
-          lineTension: 0.05,
-          data: [],
-          yAxisID: 'B'
-        },
-      ]
-    },
-    lineChartOptions: {
-      responsive: true,
-      maintainAspectRatio: false,
-      padding: 10,
-      title: {
-        display: true,
-        text: "HOURLY TEMPERATURE",
-        fontSize: 25,
-        fontFamily: 'Roboto',
-        fontStyle: 'normal',
-        fontColor: 'white',
-        padding: 15,
-      },
-      tooltips: {
-        enabled: true,
-        mode: 'index',
-        intersect: false,
-        fontColor: 'white',
-      },
-      scales: {
-        yAxes: [{
-          id: 'A',
-          type: 'linear',
-          position: 'left',
-          gridLines: {
-            display: true,
-            color: '#ffffff45'
-          },
-          ticks: {
-            lineHeight: 2.5,
-            fontSize: 16,
-            fontFamily: 'Roboto',
-            fontColor: 'white',
-            stacked: true,
-            callback: value => `${value} °`
-          }
-        }, {
-          id: 'B',
-          type: 'linear',
-          position: 'right',
-          gridLines: {
-            display: true,
-            color: '#ffffff45'
-          },
-          ticks: {
-            auto: true,
-            lineHeight: 2.5,
-            fontSize: 22,
-            fontFamily: 'Roboto',
-            fontColor: '#21a5f3',
-            stacked: true,
-            callback: value => `${value} °`
-          }
-        }],
-        xAxes: [{
-          type: 'time',
-          distribution: 'series',
-          gridLines: {
-            display: false,
-            color: 'white'
-          },
-          time: {
-            unit: 'hour',
-            displayFormats: {
-              quarter: 'h:mm a'
-            }
-          },
-          ticks: {
-            autoSkip: false,
-            maxRotation: 0,
-            minRotation: 0,
-            maxTicksLimit: 10,
-            lineHeight: 2.5,
-            fontSize: 16,
-            fontFamily: 'Roboto',
-            fontColor: 'white',
-          }
-        }]
-      },
-      legend: {
-        labels: {
-          fontColor: "white",
-          fontSize: 18
-        }
-      },
-    },
+    lineChartData: lineChartData,
+    lineChartOptions: lineChartOptions,
+    barChartData: barChartData,
+    barChartOptions: barChartOptions,
     timer: null
   };
 
-  getTemperatureArray = sensorName => {
+  getTemperatureData = sensorName => {
     const oldDataSet = this.state.lineChartData.datasets;
     let newDataSet = [...oldDataSet];
 
@@ -170,8 +50,10 @@ class App extends Component {
             ...this.state.lineChartData
           };
           newChartData.datasets = newDataSet;
-          if (this._isMounted) this.setState({ lineChartData: newChartData });
-          console.log('datasets: ', this.state.lineChartData.datasets)
+          if (this._isMounted) {
+            this.setState({ lineChartData: newChartData });
+          }
+
         })
 
       })
@@ -180,12 +62,58 @@ class App extends Component {
       });
   }
 
+
+
+  calculateAverageTemperatures = (daysNumber) => {
+    let averageTemperatures = {};
+    const oldBarDataSet = this.state.barChartData.datasets;
+    let newBarDataSet = [...oldBarDataSet];
+    const newBarChartData = {
+      ...this.state.barChartData
+    };
+    // get average values for all sensors by every day
+    for (let i = parseInt(daysNumber); i >= 0; i--) {
+      Temperature.byPeriod(sensorNames, moment().subtract(i, 'days').valueOf(), moment().subtract(i - 1, 'days').valueOf())
+        .then(response => {
+          const allTemperatures = response.data;
+          _.map(allTemperatures, ((sensorData, index) => {
+
+            const averageValue = _.meanBy(sensorData, (t) => t.value);
+            let i = sensorNames.indexOf(index);
+            newBarDataSet[i] = { ...this.state.barChartData.datasets[i] };
+            newBarDataSet[i].data = newBarDataSet[i].data || [];
+            newBarDataSet[i].data.push(averageValue.toFixed(2));
+            newBarChartData.datasets = newBarDataSet;
+
+
+          }));
+          this.setState({ barChartData: newBarChartData });
+          return newBarChartData;
+
+        });
+    }
+
+  }
+
   componentDidMount() {
     this._isMounted = true;
-    this.getTemperatureArray(sensorNames);
-    const timer = setInterval(() => { this.getTemperatureArray(sensorNames) }, 300000);
+    this.getTemperatureData(sensorNames);
+    const timer = setInterval(() => { this.getTemperatureData(sensorNames) }, 300000);
     this.setState({ timer });
+    const newData = this.calculateAverageTemperatures(5);
+    //this.setState({ barChartData: newData });
+    const ctx = document.getElementById("bar-chart").getContext("2d");
+    let gradientStroke = ctx.createLinearGradient(0, 500, 0, 100);
+
+    const oldBarDataSet = this.state.barChartData.datasets;
+    const newBarDataSet = [...oldBarDataSet];
+    _.map(newBarDataSet, (set, i) => {
+      gradientStroke.addColorStop(0, 'rgba(3, 2, 252, 0.85)');
+      gradientStroke.addColorStop(1, 'rgba(224, 76, 5, 0.95)');
+      set.backgroundColor = gradientStroke;
+    })
   }
+
   componentWillUnmount() {
     this._isMounted = false;
     clearInterval(this.state.timer);
@@ -204,12 +132,15 @@ class App extends Component {
                 <CurrentTemperature title='Near window' temperatureName="nearWindow"></CurrentTemperature>
               </div>
             </div>
-            <div className="col-8 graphics d-flex flex-column justify-content-around vh-100 p-2">
+            <div className="col-8 graphics d-flex flex-column vh-100 p-2">
               <div className="chart-container">
                 <LineChart
                   data={this.state.lineChartData}
                   options={this.state.lineChartOptions}
                 />
+              </div>
+              <div className="bar-container">
+                <BarChart data={this.state.barChartData} options={this.state.barChartOptions}></BarChart>
               </div>
             </div>
             <div className="col-1 bordered image"></div>
