@@ -8,10 +8,10 @@ import BarChart from './components/barChart';
 import { lineChartData, lineChartOptions, barChartData, barChartOptions } from './services/chart.config';
 import CurrentTemperature from './components/currentTemperature';
 import { Temperature, sensorNames } from './services/API/index';
-import { Chart } from 'react-chartjs-2';
 
 class App extends Component {
   _isMounted = false;
+  _isLoadingAvrTemp = true;
 
   state = {
     outside: null,
@@ -88,10 +88,13 @@ class App extends Component {
 
           }));
           this.setState({ barChartData: newBarChartData });
+
+          console.log(this.state.barChartData)
           return newBarChartData;
 
         });
     }
+
 
   }
 
@@ -102,16 +105,20 @@ class App extends Component {
     this.setState({ timer });
     const newData = this.calculateAverageTemperatures(5);
     //this.setState({ barChartData: newData });
-    const ctx = document.getElementById("bar-chart").getContext("2d");
-    let gradientStroke = ctx.createLinearGradient(0, 500, 0, 100);
+    // const ctx = document.getElementById("bar-chart").getContext("2d");
+    // let gradientStroke = ctx.createLinearGradient(0, 500, 0, 100);
 
-    const oldBarDataSet = this.state.barChartData.datasets;
-    const newBarDataSet = [...oldBarDataSet];
-    _.map(newBarDataSet, (set, i) => {
-      gradientStroke.addColorStop(0, 'rgba(3, 2, 252, 0.85)');
-      gradientStroke.addColorStop(1, 'rgba(224, 76, 5, 0.95)');
-      set.backgroundColor = gradientStroke;
-    })
+    // const oldBarDataSet = this.state.barChartData.datasets;
+    // const newBarDataSet = [...oldBarDataSet];
+    // _.map(newBarDataSet, (set, i) => {
+    //   gradientStroke.addColorStop(0, 'rgba(3, 2, 252, 0.85)');
+    //   gradientStroke.addColorStop(1, 'rgba(224, 76, 5, 0.95)');
+    //   set.backgroundColor = gradientStroke;
+    // });
+    // const newBarData = { ...this.state.barChartData };
+    // newBarData.datasets = newBarDataSet;
+    // this.setState({ barChartData: newBarData });
+    // this.forceUpdate();
   }
 
   componentWillUnmount() {

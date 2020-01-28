@@ -133,21 +133,21 @@ export const barChartData = {
     datasets: [
         {
             label: "Center Room",
-            backgroundColor: ["#9dfd87", "green"],
+            backgroundColor: ["#9dfd87"],
             borderColor: 'white',
             borderWidth: "1",
             lineTension: 0.05,
             data: [],
         }, {
             label: "Near window",
-            backgroundColor: ["#fdde87", 'red'],
+            backgroundColor: ["#fdde87"],
             borderColor: 'white',
             borderWidth: "1",
             lineTension: 0.05,
             data: [],
         }, {
             label: "Outside",
-            backgroundColor: ["#21a5f3", 'yellow'],
+            backgroundColor: ["#21a5f3"],
             borderColor: 'white',
             borderWidth: "1",
             lineTension: 0.05,
