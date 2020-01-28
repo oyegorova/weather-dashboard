@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { WebSocket_ENDPOINT } from "../services/API/index";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+import Spinner from "./spinner";
 class CurrentTemperature extends Component {
   state = {
     value: null,
@@ -46,11 +45,7 @@ class CurrentTemperature extends Component {
     }
     // show preloader before get temperature data
     if (!value) {
-      currentTemperature = (
-        <span>
-          <FontAwesomeIcon icon={faSpinner} spin />
-        </span>
-      );
+      currentTemperature = <Spinner />;
     } else {
       currentTemperature = <span>{value} &#x2103;</span>;
     }
