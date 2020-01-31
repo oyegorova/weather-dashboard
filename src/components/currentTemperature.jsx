@@ -4,8 +4,8 @@ import Spinner from "./spinner";
 class CurrentTemperature extends Component {
   state = {
     value: null,
-    highLimit: 27,
-    lowLimit: 20
+    highLimit: 26,
+    lowLimit: 19
   };
 
   componentDidMount = () => {
@@ -23,7 +23,6 @@ class CurrentTemperature extends Component {
     };
     ws.onclose = () => {
       console.log("disconnected");
-      // TODO: automatically try to reconnect on connection loss
     };
 
     ws.onerror = e => {

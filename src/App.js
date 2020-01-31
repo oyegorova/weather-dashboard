@@ -102,14 +102,14 @@ class App extends Component {
       <div className="App">
         <div className="container-fluid dashboard">
           <div className="row vh-100">
-            <div className="p-0">
+            <div className="p-0 col col-3 col-md-2">
               <div className="d-flex flex-column justify-content-around align-items-start vh-100 p-2">
                 <CurrentTemperature title='Outside' temperatureName="outside"></CurrentTemperature>
                 <CurrentTemperature title='Center room' temperatureName="centerRoom"></CurrentTemperature>
                 <CurrentTemperature title='Near window' temperatureName="nearWindow"></CurrentTemperature>
               </div>
             </div>
-            <div className="col-9 graphics d-flex flex-column justify-content-around vh-100 p-2">
+            <div className="col col-9 col-md-10 graphics d-flex flex-column justify-content-around vh-100 p-2">
               <div className="image-container" >
                 <img src={this.state.imgUrl} alt="random" />
               </div>
