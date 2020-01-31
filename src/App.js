@@ -62,6 +62,24 @@ class App extends Component {
       });
   }
 
+  getImages = () => {
+    getImageList().then(
+      data => {
+        this.setState({ imageList: data.data });
+        const imgLength = this.state.imageList.length;
+        let i = imgLength - 1;
+        this.setState({ imgUrl: this.state.imageList[i].download_url });
+        // images slide show
+        const imgTimer = setInterval(() => {
+          i = i >= 0 ? i : imgLength - 1;
+          this.setState({ imgUrl: this.state.imageList[i].download_url });
+          i--;
+        }, 60000);
+        this.setState({ imgTimer });
+      }
+    )
+  }
+
   componentDidMount() {
     this._isMounted = true;
     this.getTemperatureData(sensorNames);
@@ -69,22 +87,7 @@ class App extends Component {
       this.getTemperatureData(sensorNames);
     }, 300000);
     this.setState({ timer });
-    // get image list
-    getImageList().then(
-      data => {
-        this.setState({ imageList: data.data });
-        const imgLength = this.state.imageList.length;
-        let i = imgLength - 1;
-        this.setState({ imgUrl: this.state.imageList[i].download_url });
-        // update img to show
-        const imgTimer = setInterval(() => {
-          i = i >= 0 ? i : imgLength - 1;
-          this.setState({ imgUrl: this.state.imageList[i].download_url });
-          i--;
-        }, 3000);
-        this.setState({ imgTimer });
-      }
-    )
+    this.getImages();
   }
 
   componentWillUnmount() {
