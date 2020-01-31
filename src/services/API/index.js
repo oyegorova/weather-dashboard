@@ -1,4 +1,5 @@
-import { get } from "./config";
+import { get } from "../API/config";
+
 export const Temperature = {
   byDay: sensors => get(`/sensors/v1/day?sensors=${sensors}`),
   byPeriod: (sensors, fromEpochMillis, toEpochMillis) =>

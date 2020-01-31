@@ -7,9 +7,22 @@
 }
 
 .chart-container {
-  height: 50vh;
+  height: 45%;
 }
 
 .bar-container {
   height: 300px;
+}
+
+.image-container {
+  height: 45%;
+  width: 100%;
+  overflow: hidden;
+
+  img {
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
+    border-radius: 8px;
+  }
 }
