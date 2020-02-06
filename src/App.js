@@ -7,6 +7,7 @@ import { lineChartData, lineChartOptions, barChartData, barChartOptions } from '
 import CurrentTemperature from './components/currentTemperature';
 import { Temperature, sensorNames } from './services/API/index';
 import { getImageList } from './services/images';
+import VerticalBarChart from './components/verticalBarChart';
 
 class App extends Component {
   _isMounted = false;
@@ -24,6 +25,9 @@ class App extends Component {
     timer: null,
     imageList: null,
     imgUrl: '',
+    verticalBarData: [[2,32,41], [21,32,43],[22,32,11]],
+    verticalBarSeries:['Average', 'Maximum', 'Minimum'],
+    verticalBarColors:['#21a5f3', '#9dfd87', '#fdde87', ],
   };
 
   getTemperatureData = sensorName => {
@@ -74,7 +78,7 @@ class App extends Component {
           i = i >= 0 ? i : imgLength - 1;
           this.setState({ imgUrl: this.state.imageList[i].download_url });
           i--;
-        }, 60000);
+        }, 180000);
         this.setState({ imgTimer });
       }
     )
@@ -111,7 +115,13 @@ class App extends Component {
             </div>
             <div className="col col-9 col-md-10 graphics d-flex flex-column justify-content-around vh-100 p-2">
               <div className="image-container" >
-                <img src={this.state.imgUrl} alt="random" />
+                {/* <img src={this.state.imgUrl} alt="random" /> */}
+                <VerticalBarChart
+					data={ this.state.verticalBarData }
+					labels={ this.state.verticalBarSeries }
+					colors={ this.state.verticalBarColors }
+					height={ 250 }
+				/>
               </div>
               <div className="chart-container d-flex flex-row aling-content-center justify-content-center">
                 <LineChart
