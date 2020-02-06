@@ -25,9 +25,9 @@ class App extends Component {
     timer: null,
     imageList: null,
     imgUrl: '',
-    verticalBarData: [[2,32,41], [21,32,43],[22,32,11]],
-    verticalBarSeries:['Average', 'Maximum', 'Minimum'],
-    verticalBarColors:['#21a5f3', '#9dfd87', '#fdde87', ],
+    verticalBarData: [[2, 32, 41], [21, 32, 43], [22, 32, 11]],
+    verticalBarSeries: ['Average', 'Maximum', 'Minimum'],
+    verticalBarColors: ['#21a5f3', '#9dfd87', '#fdde87',],
   };
 
   getTemperatureData = sensorName => {
@@ -117,11 +117,11 @@ class App extends Component {
               <div className="image-container" >
                 {/* <img src={this.state.imgUrl} alt="random" /> */}
                 <VerticalBarChart
-					data={ this.state.verticalBarData }
-					labels={ this.state.verticalBarSeries }
-					colors={ this.state.verticalBarColors }
-					height={ 250 }
-				/>
+                  data={this.state.verticalBarData}
+                  labels={this.state.verticalBarSeries}
+                  colors={this.state.verticalBarColors}
+                  height={250}
+                />
               </div>
               <div className="chart-container d-flex flex-row aling-content-center justify-content-center">
                 <LineChart
