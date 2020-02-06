@@ -3,7 +3,7 @@ import './App.scss';
 import 'bootstrap/dist/css/bootstrap.css';
 import _ from 'lodash';
 import LineChart from './components/lineChart';
-import { lineChartData, lineChartOptions, barChartData, barChartOptions } from './services/chart.config';
+import { lineChartData, lineChartOptions } from './services/chart.config';
 import CurrentTemperature from './components/currentTemperature';
 import { Temperature, sensorNames } from './services/API/index';
 import { getImageList } from './services/images';
@@ -20,8 +20,6 @@ class App extends Component {
     data: null,
     lineChartData: lineChartData,
     lineChartOptions: lineChartOptions,
-    barChartData: barChartData,
-    barChartOptions: barChartOptions,
     timer: null,
     imageList: null,
     imgUrl: '',
