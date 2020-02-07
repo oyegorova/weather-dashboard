@@ -26,7 +26,7 @@ class App extends Component {
     imageList: null,
     imgUrl: '',
     verticalBarData: [],
-    verticalBarSeries: ['1', '2', '3', '4', '5', '6', '7'],
+    verticalBarSeries: [],
     verticalBarColors: ['#fdde87', '#9dfd87', '#21a5f3'],
   };
 
@@ -87,6 +87,7 @@ class App extends Component {
   calculateAverageTemperatures = async (daysNumber = 7) => {
     let averageTemperatures = {};
     let barData = [];
+    let barLabels = [];
     daysNumber = parseInt(daysNumber);
     // get average values for all 3 sensors by every day
     for (let i = daysNumber; i >= 0; i--) {
@@ -98,6 +99,10 @@ class App extends Component {
         averageTemperatures[i] = averageTemperatures[i] || [];
         averageTemperatures[i].push(averageValue.toFixed(2));
       }));
+
+      // get dates for bar chart labels
+      barLabels.push(moment().subtract(i, 'days').format('DD-MMM'));
+      this.setState({ verticalBarSeries: barLabels });
     }
 
     // get average temperatures in the room for bar chart
@@ -109,6 +114,10 @@ class App extends Component {
       }
     }
     this.setState({ verticalBarData: barData });
+
+
+
+
 
     return averageTemperatures;
   }
