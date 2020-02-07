@@ -92,32 +92,37 @@ class App extends Component {
     // get average values for all 3 sensors by every day
     for (let i = daysNumber; i >= 0; i--) {
       const response = await Temperature.byPeriod(sensorNames, moment().subtract(i, 'days').valueOf(), moment().subtract(i - 1, 'days').valueOf())
-      const allTemperatures = response.data;
-      _.map(allTemperatures, ((sensorData, index) => {
-        const averageValue = _.meanBy(sensorData, (t) => t.value);
-        let i = sensorNames.indexOf(index);
-        averageTemperatures[i] = averageTemperatures[i] || [];
-        averageTemperatures[i].push(averageValue.toFixed(2));
-      }));
+      if (!response) return;
+      try {
+        const allTemperatures = response.data;
+        _.map(allTemperatures, ((sensorData, index) => {
+          const averageValue = _.meanBy(sensorData, (t) => t.value);
+          let i = sensorNames.indexOf(index);
+          averageTemperatures[i] = averageTemperatures[i] || [];
+          averageTemperatures[i].push(averageValue.toFixed(2));
+        }));
 
-      // get dates for bar chart labels
-      barLabels.push(moment().subtract(i, 'days').format('DD-MMM'));
-      this.setState({ verticalBarSeries: barLabels });
+        // get dates for bar chart labels
+        barLabels.push(moment().subtract(i, 'days').format('DD-MMM'));
+        this.setState({ verticalBarSeries: barLabels });
+      } catch (e) {
+        console.log('Error in calculation for average temp: ', e);
+      }
     }
 
     // get average temperatures in the room for bar chart
-    for (let i = 0; i < daysNumber; i++) {
-      // each day has 2 values - avr temp for center room and near window
-      barData[i] = barData[i] || [];
-      for (let n = 0; n < 2; n++) {
-        barData[i].push(averageTemperatures[n][i]);
+    try {
+      for (let i = 0; i < daysNumber; i++) {
+        // each day has 2 values - avr temp for center room and near window
+        barData[i] = barData[i] || [];
+        for (let n = 0; n < 2; n++) {
+          barData[i].push(averageTemperatures[n][i]);
+        }
       }
+      this.setState({ verticalBarData: barData });
+    } catch (e) {
+      console.log('Error in calculation for average temp: ', e);
     }
-    this.setState({ verticalBarData: barData });
-
-
-
-
 
     return averageTemperatures;
   }
