@@ -7,13 +7,11 @@ class verticalBarChart extends Component {
     const { data, height, labels, colors } = this.props;
     let max = 0;
 
-    for (let i = data.length; i--; ) {
-      for (let j = data[i].length; j--; ) {
-        if (data[i][j] > max) {
-          max = data[i][j];
-        }
-      }
+    for (let t of data) {
+      let highest = Math.max.apply(null, t);
+      if (max < highest) max = highest;
     }
+
     return (
       <div>
         <h1 className="text-uppercase BarTitle">Weekly temperature</h1>
