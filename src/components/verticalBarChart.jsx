@@ -1,17 +1,20 @@
 import React, { Component } from "react";
+import Spinner from "./spinner";
 
 class verticalBarChart extends Component {
   state = {};
 
   render() {
-    const { data, height, labels, colors } = this.props;
+    const { data, labels, colors } = this.props;
     let max = 0;
 
     for (let t of data) {
       let highest = Math.max.apply(null, t);
       if (max < highest) max = highest;
     }
-
+    if (!data || !data.length) {
+      return <Spinner fontSize="65px" />;
+    }
     return (
       <div className="w-100 wrapper">
         <h1 className="text-uppercase BarTitle">

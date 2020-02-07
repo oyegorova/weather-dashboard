@@ -125,18 +125,22 @@ class App extends Component {
   componentDidMount() {
     this._isMounted = true;
     this.getTemperatureData(sensorNames);
+    this.calculateAverageTemperatures();
     const timer = setInterval(() => {
       this.getTemperatureData(sensorNames);
     }, 300000);
-    this.setState({ timer });
-    this.getImages();
-    this.calculateAverageTemperatures();
+    const timerAverageTemp = setInterval(() => {
+      this.calculateAverageTemperatures();
+    }, 12 * 60 * 60 * 1000);
+    this.setState({ timer, timerAverageTemp });
+    // this.getImages();
   }
 
   componentWillUnmount() {
     this._isMounted = false;
     clearInterval(this.state.timer);
     clearInterval(this.state.imgTimer);
+    clearInterval(this.state.timerAverageTemp);
   }
 
   render() {

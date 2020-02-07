@@ -3,7 +3,6 @@ import { Line } from "react-chartjs-2";
 import Spinner from "./spinner";
 
 const LineChart = props => {
-  console.log(props.data);
   if (!props.data.datasets[0].data.length) {
     return <Spinner fontSize="65px" />;
   }
