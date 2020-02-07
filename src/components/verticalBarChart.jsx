@@ -13,18 +13,15 @@ class verticalBarChart extends Component {
     }
 
     return (
-      <div>
-        <h1 className="text-uppercase BarTitle">Weekly temperature</h1>
+      <div className="w-100 wrapper">
+        <h1 className="text-uppercase BarTitle">
+          Weekly average temperature in 5.04 Tokyo
+        </h1>
+        <div className="legend"></div>
         <div className="Charts">
           {data.map((serie, serieIndex) => {
             return (
-              <div
-                className="Charts--serie"
-                key={serieIndex}
-                style={{
-                  height: height ? height : "auto"
-                }}
-              >
+              <div className="Charts--serie" key={serieIndex}>
                 <label>{labels[serieIndex]}</label>
                 {serie.map(function(item, itemIndex) {
                   var color = colors[itemIndex],

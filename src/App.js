@@ -25,7 +25,7 @@ class App extends Component {
     timer: null,
     imageList: null,
     imgUrl: '',
-    verticalBarData: [[2, 32, 41], [21, 32, 43], [22, 32, 11]],
+    verticalBarData: [],
     verticalBarSeries: ['1', '2', '3', '4', '5', '6', '7'],
     verticalBarColors: ['#fdde87', '#9dfd87', '#21a5f3'],
   };
@@ -41,7 +41,7 @@ class App extends Component {
           // transform obj to have x-y values
           let newData = temperatureArray.map(obj => {
             return _.transform(obj, (result, value, key) => {
-              if (key == "value") {
+              if (key === "value") {
                 return result["y"] = value;
               } else {
                 let v = new Date(value).getTime();
@@ -100,11 +100,11 @@ class App extends Component {
       }));
     }
 
-    // get average temperatures for bar chart
+    // get average temperatures in the room for bar chart
     for (let i = 0; i < daysNumber; i++) {
-      // each day has 3 values - avr temp for each sensor
+      // each day has 2 values - avr temp for center room and near window
       barData[i] = barData[i] || [];
-      for (let n = 0; n < 3; n++) {
+      for (let n = 0; n < 2; n++) {
         barData[i].push(averageTemperatures[n][i]);
       }
     }
@@ -144,7 +144,7 @@ class App extends Component {
               </div>
             </div>
             <div className="col col-9 col-md-10 graphics d-flex flex-column justify-content-around vh-100 p-2">
-              <div className="image-container" >
+              <div className="d-flex align-items-center justify-content-center" >
                 {/* <img src={this.state.imgUrl} alt="random" /> */}
                 <VerticalBarChart
                   data={this.state.verticalBarData}
