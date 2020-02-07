@@ -16,7 +16,7 @@ class verticalBarChart extends Component {
       <div>
         <h1 className="text-uppercase BarTitle">Weekly temperature</h1>
         <div className="Charts">
-          {data.map(function(serie, serieIndex) {
+          {data.map((serie, serieIndex) => {
             return (
               <div
                 className="Charts--serie"

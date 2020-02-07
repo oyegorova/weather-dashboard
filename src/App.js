@@ -9,6 +9,8 @@ import { Temperature, sensorNames } from './services/API/index';
 import { getImageList } from './services/images';
 import VerticalBarChart from './components/verticalBarChart';
 
+import moment from 'moment';
+
 class App extends Component {
   _isMounted = false;
 
@@ -24,8 +26,8 @@ class App extends Component {
     imageList: null,
     imgUrl: '',
     verticalBarData: [[2, 32, 41], [21, 32, 43], [22, 32, 11]],
-    verticalBarSeries: ['Average', 'Maximum', 'Minimum'],
-    verticalBarColors: ['#21a5f3', '#9dfd87', '#fdde87',],
+    verticalBarSeries: ['1', '2', '3', '4', '5', '6', '7'],
+    verticalBarColors: ['#fdde87', '#9dfd87', '#21a5f3'],
   };
 
   getTemperatureData = sensorName => {
@@ -82,6 +84,35 @@ class App extends Component {
     )
   }
 
+  calculateAverageTemperatures = async (daysNumber = 7) => {
+    let averageTemperatures = {};
+    let barData = [];
+    daysNumber = parseInt(daysNumber);
+    // get average values for all 3 sensors by every day
+    for (let i = daysNumber; i >= 0; i--) {
+      const response = await Temperature.byPeriod(sensorNames, moment().subtract(i, 'days').valueOf(), moment().subtract(i - 1, 'days').valueOf())
+      const allTemperatures = response.data;
+      _.map(allTemperatures, ((sensorData, index) => {
+        const averageValue = _.meanBy(sensorData, (t) => t.value);
+        let i = sensorNames.indexOf(index);
+        averageTemperatures[i] = averageTemperatures[i] || [];
+        averageTemperatures[i].push(averageValue.toFixed(2));
+      }));
+    }
+
+    // get average temperatures for bar chart
+    for (let i = 0; i < daysNumber; i++) {
+      // each day has 3 values - avr temp for each sensor
+      barData[i] = barData[i] || [];
+      for (let n = 0; n < 3; n++) {
+        barData[i].push(averageTemperatures[n][i]);
+      }
+    }
+    this.setState({ verticalBarData: barData });
+
+    return averageTemperatures;
+  }
+
   componentDidMount() {
     this._isMounted = true;
     this.getTemperatureData(sensorNames);
@@ -90,6 +121,7 @@ class App extends Component {
     }, 300000);
     this.setState({ timer });
     this.getImages();
+    this.calculateAverageTemperatures();
   }
 
   componentWillUnmount() {
