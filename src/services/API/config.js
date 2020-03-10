@@ -1,8 +1,9 @@
 import axios from "axios";
 
-const apiClient = axios.create({
-  baseURL: "http://172.18.200.166:8080"
-});
+const baseURL = "http://172.18.200.166:8080";
+const WebSocket_ENDPOINT = "ws://172.18.200.166:8080/sensors/v1/realtime";
+
+const apiClient = axios.create({ baseURL });
 apiClient.interceptors.request.use(
   config => {
     return {
@@ -22,5 +23,4 @@ apiClient.interceptors.response.use(
   }
 );
 
-const { get, post, put, delete: destroy } = apiClient;
-export { get, post, put, destroy };
+export { apiClient, WebSocket_ENDPOINT };

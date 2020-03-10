@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { WebSocket_ENDPOINT } from "../services/API/index";
+import { WebSocket_ENDPOINT } from "../services/API/config";
 import Spinner from "./spinner";
 class CurrentTemperature extends Component {
   state = {
