@@ -1,3 +1,7 @@
+# Weather-dashboard
+
+Dashboard for showing temperature and other parameters in 5.04 room Tokyo
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
