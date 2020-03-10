@@ -6,7 +6,6 @@ import LineChart from './components/lineChart';
 import { lineChartData, lineChartOptions } from './services/chart.config';
 import CurrentTemperature from './components/currentTemperature';
 import { Temperature, sensorNames } from './services/API/index';
-import { getImageList } from './services/images';
 import VerticalBarChart from './components/verticalBarChart';
 
 import moment from 'moment';
@@ -133,9 +132,9 @@ class App extends Component {
           <div className="row vh-100">
             <div className="p-0 col col-3 col-md-2">
               <div className="d-flex flex-column justify-content-around align-items-start vh-100 p-2">
-                <CurrentTemperature title='Outside' temperatureName="outside"></CurrentTemperature>
-                <CurrentTemperature title='Center room' temperatureName="centerRoom"></CurrentTemperature>
-                <CurrentTemperature title='Near window' temperatureName="nearWindow"></CurrentTemperature>
+                <CurrentTemperature title="Outside" temperatureName="outside" />
+                <CurrentTemperature title="Center room" temperatureName="centerRoom" />
+                <CurrentTemperature title="Near window" temperatureName="nearWindow" />
               </div>
             </div>
             <div className="col col-9 col-md-10 graphics d-flex flex-column justify-content-around vh-100 p-2">
