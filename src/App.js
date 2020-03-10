@@ -62,24 +62,6 @@ class App extends Component {
       });
   }
 
-  getImages = () => {
-    getImageList().then(
-      data => {
-        this.setState({ imageList: data.data });
-        const imgLength = this.state.imageList.length;
-        let i = imgLength - 1;
-        this.setState({ imgUrl: this.state.imageList[i].download_url });
-        // images slide show
-        const imgTimer = setInterval(() => {
-          i = i >= 0 ? i : imgLength - 1;
-          this.setState({ imgUrl: this.state.imageList[i].download_url });
-          i--;
-        }, 180000);
-        this.setState({ imgTimer });
-      }
-    )
-  }
-
   calculateAverageTemperatures = async (daysNumber = 7) => {
     let averageTemperatures = {};
     let barData = [];
@@ -134,7 +116,6 @@ class App extends Component {
       this.calculateAverageTemperatures();
     }, 12 * 60 * 60 * 1000);
     this.setState({ timer, timerAverageTemp });
-    // this.getImages();
   }
 
   componentWillUnmount() {
