@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const baseURL = "http://172.18.200.166:8080";
-const WebSocket_ENDPOINT = "ws://172.18.200.166:8080/sensors/v1/realtime";
+const baseURL = "http://172.18.200.95:8080";
+const WebSocket_ENDPOINT = "ws://172.18.200.95:8080/sensors/v1/realtime";
 
 const apiClient = axios.create({ baseURL });
 apiClient.interceptors.request.use(
@@ -9,7 +9,6 @@ apiClient.interceptors.request.use(
     return {
       ...config,
       headers: {
-        // TODO: add headers
       }
     };
   },
