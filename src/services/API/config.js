@@ -1,7 +1,14 @@
 import axios from "axios";
 
-const baseURL = "http://172.18.200.95:8080";
-const WebSocket_ENDPOINT = "ws://172.18.200.95:8080/sensors/v1/realtime";
+let host;
+if (process.env.NODE_ENV === 'development') {
+  host = "172.18.200.95:8080";
+} else {
+  host = window.location.host;
+}
+
+const baseURL = `http://${host}`;
+const WebSocket_ENDPOINT = `ws://${host}/sensors/v1/realtime`;
 
 const apiClient = axios.create({ baseURL });
 apiClient.interceptors.request.use(
