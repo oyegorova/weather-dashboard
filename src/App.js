@@ -39,7 +39,7 @@ class App extends Component {
               if (key === "value") {
                 return result["y"] = value;
               } else {
-                let v = new Date(value).getTime();
+                let v = new Date(value * 1000).getTime();
                 return result["x"] = v;
               }
             });
